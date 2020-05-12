@@ -1,0 +1,21 @@
+[2020-05-06 14:55:20] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at /home/ali/Window/Coding Sight/PhpstormProjects/Project/api-web-auth/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:168)
+[stacktrace]
+#0 /home/ali/Window/Coding Sight/PhpstormProjects/Project/api-web-auth/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(102): Illuminate\\Log\\LogManager->resolve(NULL)
+#1 /home/ali/Window/Coding Sight/PhpstormProjects/Project/api-web-auth/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(90): Illuminate\\Log\\LogManager->get(NULL)
+#2 /home/ali/Window/Coding Sight/PhpstormProjects/Project/api-web-auth/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(500): Illuminate\\Log\\LogManager->driver()
+#3 /home/ali/Window/Coding Sight/PhpstormProjects/Project/api-web-auth/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(116): Illuminate\\Log\\LogManager->error('syntax error, u...', Array)
+#4 /home/ali/Window/Coding Sight/PhpstormProjects/Project/api-web-auth/app/Exceptions/Handler.php(37): Illuminate\\Foundation\\Exceptions\\Handler->report(Object(Symfony\\Component\\Debug\\Exception\\FatalThrowableError))
+#5 /home/ali/Window/Coding Sight/PhpstormProjects/Project/api-web-auth/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(378): App\\Exceptions\\Handler->report(Object(Symfony\\Component\\Debug\\Exception\\FatalThrowableError))
+#6 /home/ali/Window/Coding Sight/PhpstormProjects/Project/api-web-auth/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(143): Illuminate\\Foundation\\Console\\Kernel->reportException(Object(Symfony\\Component\\Debug\\Exception\\FatalThrowableError))
+#7 /home/ali/Window/Coding Sight/PhpstormProjects/Project/api-web-auth/artisan(37): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#8 {main}
+"} 
+[2020-05-06 14:55:20] laravel.ERROR: syntax error, unexpected ';', expecting ']' {"exception":"[object] (Symfony\\Component\\Debug\\Exception\\FatalThrowableError(code: 0): syntax error, unexpected ';', expecting ']' at /home/ali/Window/Coding Sight/PhpstormProjects/Project/api-web-auth/config/database.php:153)
+[stacktrace]
+#0 /home/ali/Window/Coding Sight/PhpstormProjects/Project/api-web-auth/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php(39): Illuminate\\Foundation\\Bootstrap\\LoadConfiguration->loadConfigurationFiles(Object(Illuminate\\Foundation\\Application), Object(Illuminate\\Config\\Repository))
+#1 /home/ali/Window/Coding Sight/PhpstormProjects/Project/api-web-auth/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(210): Illuminate\\Foundation\\Bootstrap\\LoadConfiguration->bootstrap(Object(Illuminate\\Foundation\\Application))
+#2 /home/ali/Window/Coding Sight/PhpstormProjects/Project/api-web-auth/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(322): Illuminate\\Foundation\\Application->bootstrapWith(Array)
+#3 /home/ali/Window/Coding Sight/PhpstormProjects/Project/api-web-auth/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(131): Illuminate\\Foundation\\Console\\Kernel->bootstrap()
+#4 /home/ali/Window/Coding Sight/PhpstormProjects/Project/api-web-auth/artisan(37): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#5 {main}
+"} 
