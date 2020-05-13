@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests\Api;
+namespace App\Http\Requests\Api\Hotel;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
-class SignUpRequest extends FormRequest
+class DeleteHotelRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,38 +24,19 @@ class SignUpRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
-    {
+    public function rules() {
         return [
-            'name' => 'required',
-            'email' => 'required|email',
-            'phone_code' => 'required',
-            'phone' => 'required',
-            'role' => 'required|in:' . implode(",", ['USER', 'ADMIN']),
-            'password' => 'required|min:6|confirmed',
-            'device_type' => 'required|in:' . implode(",", ['android', 'ios']),
-            'device_token' => 'required',
+            'id' => 'required|integer'
         ];
     }
 
     /**
      * @return array
      */
-    public function messages()
-    {
+    public function messages() {
         return [
-            'name.required' => __('Name field can not be empty'),
-            'password.required' => __('Password field can not be empty'),
-            'password.min' => __('Password length must be at least 8 characters.'),
-            'password.confirmed' => __('Password and confirm password is not matched'),
-            'email.required' => __('Email field can not be empty'),
-            'phone_code.required' => __('Phone Code field can not be empty'),
-            'phone.required' => __('Phone field can not be empty'),
-            'role.required' => __('Role can not be empty'),
-            'email.email' => __('Invalid email address'),
-            'device_type.required' => __('Device type is required'),
-            'device_type.in' => __('Device type is invalid'),
-            'device_token.required' => __('Device token is required'),
+            'id.required' => __('name field can not be empty'),
+            'id.integer' => __('id field can not be integer')
         ];
     }
 
@@ -63,8 +44,7 @@ class SignUpRequest extends FormRequest
      * @param Validator $validator
      * @throws ValidationException
      */
-    public function failedValidation(Validator $validator)
-    {
+    public function failedValidation(Validator $validator){
         if ($this->header('accept') == "application/json") {
             $errors = '';
             if ($validator->fails()) {

@@ -23,7 +23,6 @@ class CommonService
 
     /**
      * CommonService constructor.
-     * @param $repository
      */
     function __construct()
     {

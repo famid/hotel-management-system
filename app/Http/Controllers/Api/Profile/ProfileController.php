@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Profile;
 
 use App\Http\Requests\Api\LanguageSetRequest;
 use App\Http\Requests\Api\PhoneVerificationRequest;
@@ -8,6 +8,7 @@ use App\Http\Requests\Api\UpdatePasswordRequest;
 use App\Http\Requests\Api\UpdateProfileRequest;
 use App\Http\Services\ProfileService;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 
 class ProfileController extends Controller
 {
@@ -23,7 +24,7 @@ class ProfileController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function getUserProfile()
     {
@@ -34,7 +35,7 @@ class ProfileController extends Controller
 
     /**
      * @param UpdateProfileRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function updateUserProfile(UpdateProfileRequest $request)
     {
@@ -45,7 +46,7 @@ class ProfileController extends Controller
 
     /**
      * @param UpdatePasswordRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function updatePassword(UpdatePasswordRequest $request)
     {
@@ -55,7 +56,7 @@ class ProfileController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function sendPhoneVerificationCode()
     {
@@ -66,7 +67,7 @@ class ProfileController extends Controller
 
     /**
      * @param PhoneVerificationRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function phoneVerify(PhoneVerificationRequest $request)
     {
@@ -76,7 +77,7 @@ class ProfileController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function languageList()
     {
@@ -87,7 +88,7 @@ class ProfileController extends Controller
 
     /**
      * @param LanguageSetRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function setLanguage(LanguageSetRequest $request)
     {

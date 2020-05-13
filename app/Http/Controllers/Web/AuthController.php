@@ -13,9 +13,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Web\ResetPasswordRequest;
 use App\Http\Requests\Web\SendForgotPasswordEmailRequest;
 use App\Http\Requests\Web\SignInRequest;
-use App\Http\Services\WebAuthService;
-use Illuminate\Http\Request;
+use App\Http\Services\Authentication\WebAuthService;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class AuthController extends Controller
 {
@@ -25,51 +28,51 @@ class AuthController extends Controller
      * AuthController constructor.
      * @param WebAuthService $service
      */
-    public function __construct(WebAuthService $service)
-    {
+    public function __construct(WebAuthService $service) {
         $this->service = $service;
     }
 
     /**
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
-    public function index()
-    {
+    public function index() {
         $user = Auth::user();
         if (!empty($user) && $user->role == SUPER_ADMIN_ROLE) {
+
             return redirect()->route('superAdmin.dashboard');
         } else {
+
             return redirect()->route('signIn');
         }
     }
 
     /**
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return Application|Factory|View
      */
-    public function signIn()
-    {
+    public function signIn() {
+
         return view('auth.login');
     }
 
     /**
      * @param SignInRequest $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
-    public function signInProcess(SignInRequest $request)
-    {
+    public function signInProcess(SignInRequest $request) {
         $response = $this->service->signInProcess($request);
         if($response['success']){
+
             return redirect()->route('superAdmin.dashboard')->with(['success' => $response['message']]);
         }else{
+
             return redirect()->back()->with(['error' => $response['message']]);
         }
     }
 
     /**
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
-    public function signOut()
-    {
+    public function signOut() {
         Auth::logout();
         session()->flush();
 
@@ -77,45 +80,47 @@ class AuthController extends Controller
     }
 
     /**
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return Application|Factory|View
      */
-    public function forgetPassword()
-    {
+    public function forgetPassword() {
+
         return view('auth.forget_password_email');
     }
 
     /**
-     * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @param SendForgotPasswordEmailRequest $request
+     * @return RedirectResponse
      */
-    public function forgetPasswordEmailSendProcess(SendForgotPasswordEmailRequest $request)
-    {
+    public function forgetPasswordEmailSendProcess(SendForgotPasswordEmailRequest $request) {
         $response = $this->service->sendForgetPasswordEmail($request);
         if($response['success']){
+
             return redirect()->route('forgetPasswordCode')->with(['success' => $response['message']]);
         }else{
+
             return redirect()->back()->with(['error' => $response['message']]);
         }
     }
 
     /**
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return Application|Factory|View
      */
-    public function forgetPasswordCode()
-    {
+    public function forgetPasswordCode() {
+
         return view('auth.forget_password');
     }
 
     /**
      * @param ResetPasswordRequest $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
-    public function forgetPasswordCodeProcess(ResetPasswordRequest $request)
-    {
+    public function forgetPasswordCodeProcess(ResetPasswordRequest $request) {
         $response = $this->service->resetPassword($request);
         if($response['success']){
+
             return redirect()->route('signIn')->with(['success' => $response['message']]);
         }else{
+
             return redirect()->back()->with(['error' => $response['message']]);
         }
     }

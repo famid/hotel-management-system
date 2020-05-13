@@ -12,7 +12,7 @@ namespace App\Http\Repository;
 
 use App\Models\AdminSetting;
 
-class AdminSettingsRepository extends CommonRepository
+class AdminSettingsRepository extends BaseRepository
 {
     public $model;
 

@@ -12,7 +12,7 @@ namespace App\Http\Repository;
 
 use App\Models\MobileDevice;
 
-class MobileDeviceRepository extends CommonRepository
+class MobileDeviceRepository extends BaseRepository
 {
     public $model;
 

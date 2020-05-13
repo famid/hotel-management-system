@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\EmailVerificationRequest;
@@ -10,8 +10,9 @@ use App\Http\Requests\Api\SendForgotPasswordEmailRequest;
 use App\Http\Requests\Api\SignInRequest;
 use App\Http\Requests\Api\SignUpRequest;
 use App\Http\Requests\Api\SocialLoginRequest;
-use App\Http\Services\ApiAuthService;
-use Illuminate\Http\Request;
+use App\Http\Services\Authentication\ApiAuthService;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Http\JsonResponse;
 
 class AuthController extends Controller
 {
@@ -21,17 +22,15 @@ class AuthController extends Controller
      * AuthController constructor.
      * @param ApiAuthService $service
      */
-    public function __construct(ApiAuthService $service)
-    {
+    public function __construct(ApiAuthService $service) {
         $this->service = $service;
     }
 
     /**
      * @param SignUpRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function signUp(SignUpRequest $request)
-    {
+    public function signUp(SignUpRequest $request) {
         $response = $this->service->signUp($request);
 
         return response()->json($response);
@@ -39,21 +38,19 @@ class AuthController extends Controller
 
     /**
      * @param SignInRequest $request
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Illuminate\Auth\AuthenticationException
+     * @return JsonResponse
+     * @throws AuthenticationException
      */
-    public function signIn(SignInRequest $request)
-    {
+    public function signIn(SignInRequest $request) {
         $response = $this->service->signIn($request);
 
         return response()->json($response);
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function resendEmailVerificationCode()
-    {
+    public function resendEmailVerificationCode() {
         $response = $this->service->resendEmailVerificationCode();
 
         return response()->json($response);
@@ -61,21 +58,19 @@ class AuthController extends Controller
 
     /**
      * @param EmailVerificationRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function emailVerify(EmailVerificationRequest $request)
-    {
+    public function emailVerify(EmailVerificationRequest $request) {
         $response = $this->service->emailVerify($request);
 
         return response()->json($response);
     }
 
     /**
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param SendForgotPasswordEmailRequest $request
+     * @return JsonResponse
      */
-    public function sendForgetPasswordEmail(SendForgotPasswordEmailRequest $request)
-    {
+    public function sendForgetPasswordEmail(SendForgotPasswordEmailRequest $request) {
         $response = $this->service->sendForgetPasswordEmail($request);
 
         return response()->json($response);
@@ -83,10 +78,9 @@ class AuthController extends Controller
 
     /**
      * @param ResetPasswordRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function resetPassword(ResetPasswordRequest $request)
-    {
+    public function resetPassword(ResetPasswordRequest $request) {
         $response = $this->service->resetPassword($request);
 
         return response()->json($response);
@@ -94,10 +88,9 @@ class AuthController extends Controller
 
     /**
      * @param SocialLoginRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function socialLogin(SocialLoginRequest $request)
-    {
+    public function socialLogin(SocialLoginRequest $request) {
         $response = $this->service->socialLogin($request);
 
         return response()->json($response);
@@ -105,10 +98,9 @@ class AuthController extends Controller
 
     /**
      * @param LogoutRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function logout(LogoutRequest $request)
-    {
+    public function logout(LogoutRequest $request) {
         $response = $this->service->logout($request);
 
         return response()->json($response);

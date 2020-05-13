@@ -12,7 +12,7 @@ namespace App\Http\Repository;
 
 use App\Models\PasswordReset;
 
-class PasswordResetRepository extends CommonRepository
+class PasswordResetRepository extends BaseRepository
 {
     public $model;
 

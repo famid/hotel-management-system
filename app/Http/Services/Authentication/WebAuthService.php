@@ -1,9 +1,10 @@
 <?php
 
 
-namespace App\Http\Services;
+namespace App\Http\Services\Authentication;
 
 
+use App\Http\Services\CommonService;
 use App\Jobs\SendForgetPasswordEmailJob;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;

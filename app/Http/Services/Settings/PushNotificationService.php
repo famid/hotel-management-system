@@ -6,7 +6,7 @@
  * Time: 2:38 AM
  */
 
-namespace App\Http\Services;
+namespace App\Http\Services\Settings;
 
 
 use App\Models\MobileDevice;

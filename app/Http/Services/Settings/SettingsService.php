@@ -1,9 +1,10 @@
 <?php
 
 
-namespace App\Http\Services;
+namespace App\Http\Services\Settings;
 
 
+use App\Http\Services\CommonService;
 use Illuminate\Support\Facades\DB;
 
 class SettingsService extends CommonService

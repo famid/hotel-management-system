@@ -12,15 +12,14 @@ namespace App\Http\Repository;
 use App\User;
 use Illuminate\Support\Facades\DB;
 
-class UserRepository extends CommonRepository
+class UserRepository extends BaseRepository
 {
     public $model;
 
     /**
      * UserRepository constructor.
      */
-    function __construct()
-    {
+    function __construct() {
         $this->model = new User();
         parent::__construct($this->model);
     }
@@ -30,8 +29,8 @@ class UserRepository extends CommonRepository
      * @param $data
      * @return mixed
      */
-    public function updateOrCreate($where, $data)
-    {
+    public function updateOrCreate($where, $data) {
+
         return User::updateOrCreate($where, $data);
     }
 

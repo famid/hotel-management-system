@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\Web\SuperAdmin;
 
-use Illuminate\Http\Request;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
 use App\Http\Controllers\Controller;
+use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
     /**
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return Application|Factory|View
      */
     public function dashboard()
     {

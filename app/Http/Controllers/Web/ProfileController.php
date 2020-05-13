@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Requests\Web\ChangePasswordRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Services\ProfileService;
+use Illuminate\Http\RedirectResponse;
 
 class ProfileController extends Controller
 {
@@ -30,7 +31,7 @@ class ProfileController extends Controller
 
     /**
      * @param ChangePasswordRequest $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function passwordChangeProcess(ChangePasswordRequest $request)
     {

@@ -37,10 +37,11 @@ class SendPhoneVerificationMessageJob implements ShouldQueue
     {
         $user = $this->user;
         $randNo = $this->randNo;
+        $phone = $user->phone_code . $user->phone;
         try {
             $settings = allSetting(['twilio_sid', 'twilio_token', 'twilio_from']);
             $twilio = new Twilio($settings['twilio_sid'], $settings['twilio_token'], $settings['twilio_from']);
-            $twilio->message($user->phone, __('Your verification code is ') . $randNo);
+            $twilio->message($phone, __('Your verification code is ') . $randNo);
         }catch (\Exception $e){
             Log::info($e->getMessage());
         }

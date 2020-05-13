@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests\Api;
+namespace App\Http\Requests\Api\Hotel;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
-class SignUpRequest extends FormRequest
+class CreateHotelDetailRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,38 +24,36 @@ class SignUpRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
-    {
+    public function rules() {
+
         return [
-            'name' => 'required',
-            'email' => 'required|email',
-            'phone_code' => 'required',
-            'phone' => 'required',
-            'role' => 'required|in:' . implode(",", ['USER', 'ADMIN']),
-            'password' => 'required|min:6|confirmed',
-            'device_type' => 'required|in:' . implode(",", ['android', 'ios']),
-            'device_token' => 'required',
+            'hotel_id' => 'required|integer',
+            'country' => 'required|string',
+            'city' => 'required|string',
+            'state' => 'required|string',
+            'location' => 'required|string',
+            'zip_code' => 'required|string'
         ];
     }
 
     /**
      * @return array
      */
-    public function messages()
-    {
+    public function messages() {
+
         return [
-            'name.required' => __('Name field can not be empty'),
-            'password.required' => __('Password field can not be empty'),
-            'password.min' => __('Password length must be at least 8 characters.'),
-            'password.confirmed' => __('Password and confirm password is not matched'),
-            'email.required' => __('Email field can not be empty'),
-            'phone_code.required' => __('Phone Code field can not be empty'),
-            'phone.required' => __('Phone field can not be empty'),
-            'role.required' => __('Role can not be empty'),
-            'email.email' => __('Invalid email address'),
-            'device_type.required' => __('Device type is required'),
-            'device_type.in' => __('Device type is invalid'),
-            'device_token.required' => __('Device token is required'),
+            'hotel_id.required' => __('hotel_id field can not be empty'),
+            'hotel_id.integer' => __('hotel_id field must be integer'),
+            'country.required' => __('country field can not be empty'),
+            'country.string' => __('country field must be string'),
+            'city.required' => __('city field can not be empty'),
+            'city.string' => __('city field must be string'),
+            'state.required' => __('state field can not be empty'),
+            'state.string' => __('state field must be string'),
+            'location.required' => __('location field can not be empty'),
+            'location.string' => __('location field must be string'),
+            'zip_code.required' => __('zip_code field can not be empty'),
+            'zip_code.integer' => __('zip_code field must be integer')
         ];
     }
 
@@ -63,8 +61,7 @@ class SignUpRequest extends FormRequest
      * @param Validator $validator
      * @throws ValidationException
      */
-    public function failedValidation(Validator $validator)
-    {
+    public function failedValidation(Validator $validator) {
         if ($this->header('accept') == "application/json") {
             $errors = '';
             if ($validator->fails()) {

@@ -6,15 +6,12 @@
  * Time: 12:21 PM
  */
 
-namespace App\Http\Services;
+namespace App\Http\Services\Authentication;
 
 
-use App\Http\Repository\UserRepository;
+use App\Http\Services\CommonService;
 use App\Jobs\SendForgetPasswordEmailJob;
 use App\Jobs\SendVerificationEmailJob;
-use App\Models\MobileDevice;
-use App\Models\PasswordReset;
-use App\User;
 use Carbon\Carbon;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
@@ -24,12 +21,10 @@ use Illuminate\Support\Facades\Hash;
 
 class ApiAuthService extends CommonService
 {
-
     /**
      * ProfileService constructor.
      */
-    function __construct()
-    {
+    function __construct() {
         parent::__construct();
     }
 
@@ -37,11 +32,11 @@ class ApiAuthService extends CommonService
      * @param Request $request
      * @return array
      */
-    public function signUp(Request $request)
-    {
+    public function signUp(Request $request) {
         $where = ['email' => $request->email, 'social_network_type' => $request->social_network_type];
         $hasEmail = $this->userRepository->whereFirst($where);
         if (!empty($hasEmail)) {
+
             return [
                 'success' => false,
                 'message' => __('This email is already used'),
@@ -51,6 +46,7 @@ class ApiAuthService extends CommonService
         $where = ['phone' => $request->phone];
         $hasPhone = $this->userRepository->whereFirst($where);
         if (!empty($hasPhone)) {
+
             return [
                 'success' => false,
                 'message' => __('This phone number is already used'),
@@ -62,6 +58,7 @@ class ApiAuthService extends CommonService
         $name = explode(' ', $request->name);
         $insert = [
             'email' => $request->email,
+            'phone_code' => $request->phone_code,
             'phone' => $request->phone,
             'password' => Hash::make($request->get('password')),
             'first_name' => isset($name[0]) ? $name[0] : "",
@@ -119,12 +116,12 @@ class ApiAuthService extends CommonService
      * @return array
      * @throws AuthenticationException
      */
-    public function signIn(Request $request)
-    {
+    public function signIn(Request $request) {
         $where = ['email' => $request->email];
         $user = $this->userRepository->whereFirst($where);
         if (!empty($user)) {
             if ($user->role != USER_ROLE && $user->role != ADMIN_ROLE) {
+
                 return  [
                     'success' => false,
                     'message' => __("This is not user email"),
@@ -198,6 +195,7 @@ class ApiAuthService extends CommonService
     {
         $user = Auth::user();
         if ($user->status == USER_ACTIVE_STATUS) {
+
             return [
                 'success' => false,
                 'message' => __('Your account is already verified'),
@@ -220,6 +218,7 @@ class ApiAuthService extends CommonService
                 'data' => null
             ];
         } catch (\Exception $exception) {
+
             return [
                 'success' => false,
                 'message' => __('Something went wrong. Please try again! ') . $exception->getMessage(),
@@ -232,10 +231,10 @@ class ApiAuthService extends CommonService
      * @param $request
      * @return array
      */
-    public function emailVerify($request)
-    {
+    public function emailVerify($request) {
         $user = Auth::user();
         if ($user->status == USER_ACTIVE_STATUS) {
+
             return [
                 'success' => false,
                 'message' => __("Your account is already verified"),
@@ -254,6 +253,7 @@ class ApiAuthService extends CommonService
                 DB::commit();
             } catch (\Exception $exception) {
                 DB::rollBack();
+
                 return [
                     'success' => false,
                     'message' => __("Something went wrong. Please try again") . $exception->getMessage(),
@@ -267,6 +267,7 @@ class ApiAuthService extends CommonService
                 'data' => null
             ];
         } else {
+
             return [
                 'success' => false,
                 'message' => __("Account verification code is invalid."),
@@ -279,14 +280,14 @@ class ApiAuthService extends CommonService
      * @param $request
      * @return array
      */
-    public function sendForgetPasswordEmail($request)
-    {
+    public function sendForgetPasswordEmail($request) {
         $where = [
             'email' => $request->email,
             'is_social_login' => 0
         ];
         $user = $this->userRepository->whereFirst($where);
         if (empty($user)) {
+
             return [
                 'success' => false,
                 'message' =>  __('User not found'),
@@ -311,6 +312,7 @@ class ApiAuthService extends CommonService
                 'data' => null
             ];
         } catch (\Exception $exception) {
+
             return [
                 'success' => false,
                 'message' =>  __('Something went wrong. Please try again'),
@@ -323,8 +325,7 @@ class ApiAuthService extends CommonService
      * @param $request
      * @return array
      */
-    public function resetPassword($request)
-    {
+    public function resetPassword($request) {
         $where = [
             'verification_code' => $request->reset_password_code,
             'status' => PENDING_STATUS
@@ -338,6 +339,7 @@ class ApiAuthService extends CommonService
             $orderBy = ['id', 'desc'];
             $latestResetCode = $this->passwordResetRepository->whereFirst($where, $orderBy);
             if (($latestResetCode->verification_code != $request->reset_password_code)) {
+
                 return [
                     'success' => false,
                     'message' =>   __('Your given reset password code is incorrect'),
@@ -345,6 +347,7 @@ class ApiAuthService extends CommonService
                 ];
             }
         } else {
+
             return [
                 'success' => false,
                 'message' =>   __('Your given reset password code is incorrect'),
@@ -355,6 +358,7 @@ class ApiAuthService extends CommonService
         if (!empty($passwordResetCode)) {
             $totalDuration = Carbon::now()->diffInMinutes($passwordResetCode->created_at);
             if ($totalDuration > EXPIRE_TIME_OF_FORGET_PASSWORD_CODE) {
+
                 return [
                     'success' => false,
                     'message' =>  __('Your code has been expired. Please give your code with in') . EXPIRE_TIME_OF_FORGET_PASSWORD_CODE . __('minutes'),
@@ -364,6 +368,7 @@ class ApiAuthService extends CommonService
             $where = ['id' => $passwordResetCode->user_id];
             $user = $this->userRepository->whereFirst($where);
             if (empty($user)) {
+
                 return [
                     'success' => false,
                     'message' =>  __('User not found'),
@@ -395,8 +400,7 @@ class ApiAuthService extends CommonService
      * @param Request $request
      * @return array
      */
-    public function socialLogin(Request $request)
-    {
+    public function socialLogin(Request $request) {
         DB::beginTransaction();
         try {
             $name = explode(' ', $request->name);
@@ -428,7 +432,6 @@ class ApiAuthService extends CommonService
             if ($user) {
                 $token = $user->createToken($request->get('email'))->accessToken;
             }
-
             $response = [
                 'success' => true,
                 'email_verification' => true,
@@ -459,8 +462,7 @@ class ApiAuthService extends CommonService
      * @param $request
      * @return array
      */
-    public function logout($request)
-    {
+    public function logout($request) {
         try {
             $where = [
                 'user_id' => Auth::id(),
@@ -476,6 +478,7 @@ class ApiAuthService extends CommonService
                 'data' => null
             ];
         } catch (\Exception $exception) {
+
             return [
                 'success' => false,
                 'message' => __('Something went wrong. Please try again'),
