@@ -16,7 +16,7 @@ class CreateRoomsTable extends Migration
         Schema::create('rooms', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('room_number');
-            $table->enum('room_type',['single,double','deluxe']);
+            $table->string('room_type');
             $table->integer('floor_no');
             $table->float('rent');
             $table->boolean('smoking_zone');

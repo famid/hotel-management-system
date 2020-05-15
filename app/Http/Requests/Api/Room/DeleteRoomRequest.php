@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests\Api\Hotel;
+namespace App\Http\Requests\Api\Room;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
-class UpdateHotelFeatureRequest extends FormRequest
+class DeleteRoomRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,8 +27,7 @@ class UpdateHotelFeatureRequest extends FormRequest
     public function rules() {
 
         return [
-            'feature' => 'required',
-            'hotel_id' => 'required|integer'
+            'id' => 'required|integer'
         ];
     }
 
@@ -36,14 +35,11 @@ class UpdateHotelFeatureRequest extends FormRequest
      * @return array
      */
     public function messages() {
-
         return [
-            'feature.required' => __('feature field can not be empty'),
-            'hotel_id.required' => __('hotel_id field can not be empty'),
-            'hotel_id.integer' => __('hotel_id field should be integer')
+            'id.required' => __('id field can not be empty'),
+            'id.integer' => __('id must be an integer'),
         ];
     }
-
     /**
      * @param Validator $validator
      * @throws ValidationException

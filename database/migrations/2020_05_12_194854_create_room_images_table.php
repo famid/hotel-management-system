@@ -15,7 +15,7 @@ class CreateRoomImagesTable extends Migration
     {
         Schema::create('room_images', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->binary('picture');
+            $table->string('picture');
             $table->bigInteger('room_id')->unsigned();
             $table->timestamps();
             $table->foreign('room_id')->references('id')->on('rooms')->onDelete('cascade');

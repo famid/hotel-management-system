@@ -72,6 +72,15 @@ Route::group(['middleware' => ['language'], 'namespace' => 'Api'], function () {
                     Route::post('delete-hotel', 'HotelController@deleteHotel')->name('deleteHotel');
                     Route::post('create-hotel-details', 'HotelDetailController@createDetails')->name('createDetails');
                     Route::post('update-hotel-details', 'HotelDetailController@updateDetails')->name('updateDetails');
+                    Route::post('create-hotel-features', 'HotelFeatureController@createFeature')->name('createFeature');
+                    Route::post('update-hotel-features', 'HotelFeatureController@updateFeature')->name('updateFeature');
+                    Route::post('delete-hotel-features', 'HotelFeatureController@deleteFeature')->name('deleteFeature');
+                });
+
+                Route::group(['namespace' => 'Room'] , function () {
+                    Route::post('create-room', 'RoomController@createRoom')->name('createRoom');
+                    Route::post('update-room', 'RoomController@updateRoom')->name('updateRoom');
+                    Route::post('delete-room', 'RoomController@deleteRoom')->name('deleteRoom');
                 });
 
             });
