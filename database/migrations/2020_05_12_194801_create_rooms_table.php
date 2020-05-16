@@ -16,11 +16,11 @@ class CreateRoomsTable extends Migration
         Schema::create('rooms', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('room_number');
-            $table->string('room_type');
+            $table->enum('room_type',['single','double','twin','delux','queen' , 'king']);
             $table->integer('floor_no');
             $table->float('rent');
-            $table->boolean('smoking_zone');
-            $table->boolean('reservation_status');
+            $table->boolean('smoking_zone')->default(false);
+            $table->boolean('reservation_status')->default(ROOM_RESERVATION_ACTIVE_STATUS);
             $table->dateTime('available_at');
             $table->bigInteger('hotel_id')->unsigned();
             $table->timestamps();

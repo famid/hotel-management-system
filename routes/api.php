@@ -82,6 +82,10 @@ Route::group(['middleware' => ['language'], 'namespace' => 'Api'], function () {
                     Route::post('update-room', 'RoomController@updateRoom')->name('updateRoom');
                     Route::post('delete-room', 'RoomController@deleteRoom')->name('deleteRoom');
                 });
+                Route::group(['namespace' => 'Booking'] , function () {
+                    Route::post('check-in-room', 'RoomBookingController@checkInRoom')->name('checkInRoom');
+
+                });
 
             });
 

@@ -3,6 +3,8 @@
 const USER_PENDING_STATUS = 0;
 const USER_ACTIVE_STATUS = 1;
 
+const ROOM_RESERVATION_ACTIVE_STATUS = 1;
+const ROOM_RESERVATION_PENDING_STATUS = 0;
 
 const SUPER_ADMIN_ROLE = 1;
 const ADMIN_ROLE = 2;
@@ -13,5 +15,12 @@ const ACTIVE_STATUS = 1;
 const DELETE_STATUS = 5;
 
 const EXPIRE_TIME_OF_FORGET_PASSWORD_CODE = 10;
+
+const PAID ='paid';
+const DUE ='due';
+const BOOKED ='booked';
+const MINIMUM_PAID_AMOUNT = 0;
+
+
 
 

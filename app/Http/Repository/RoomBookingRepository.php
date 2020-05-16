@@ -14,5 +14,11 @@ class RoomBookingRepository extends BaseRepository
         $this->model = new RoomBooking();
         parent::__construct($this->model);
     }
+    public function getAvailableAt ($roomId) {
+        return $this->model::where('room_id', $roomId)->orderBy('check_out', 'desc')->first()
+            ->check_out;
+
+
+    }
 
 }

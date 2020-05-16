@@ -23,6 +23,34 @@ class SuperAdmin extends Seeder
             'status' => USER_ACTIVE_STATUS
         ]);
 
+        \App\User::create([
+            'first_name' => 'Mr.',
+            'last_name' => 'Famid',
+            'email' => 'famid@gmail.com',
+            'user_name' => null,
+            'phone_code' => '+880',
+            'phone' => '1793851981',
+            'password' => \Illuminate\Support\Facades\Hash::make('12345678'),
+            'role' => ADMIN_ROLE,
+            'email_verification_code' => null,
+            'is_phone_verified' => ACTIVE_STATUS,
+            'status' => USER_ACTIVE_STATUS
+        ]);
+        \App\User::create([
+            'first_name' => 'Mr.',
+            'last_name' => 'Osif',
+            'email' => 'osif@gmail.com',
+            'user_name' => null,
+            'phone_code' => '+880',
+            'phone' => '1793851982',
+            'password' => \Illuminate\Support\Facades\Hash::make('12345678'),
+            'role' => USER_ROLE,
+            'email_verification_code' => null,
+            'is_phone_verified' => ACTIVE_STATUS,
+            'status' => USER_ACTIVE_STATUS
+        ]);
+
+
 //        \App\User::create([
 //            'first_name' => 'Mr.',
 //            'last_name' => 'Admin',
