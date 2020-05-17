@@ -93,6 +93,16 @@ class HotelService
             return $this->errorResponse;
         }
 
-        return ['success' => true , 'message' => 'Hotel was deleted successfully'];
+        return ['success' => true , 'message' => __('Hotel was deleted successfully')];
+    }
+    public function  allHotel () :array {
+        $allHotelData = $this->hotelRepository->getAll();
+        if($allHotelData->isEmpty()) {
+
+            return $this->errorResponse;
+        }
+
+        return ['success' => true, 'data' => $allHotelData, 'message' => __('Get your Hotel')];
+
     }
 }

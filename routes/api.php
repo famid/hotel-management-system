@@ -64,6 +64,18 @@ Route::group(['middleware' => ['language'], 'namespace' => 'Api'], function () {
                 Route::get('send-phone-verification-code', 'ProfileController@sendPhoneVerificationCode')->name('api.sendPhoneVerificationCode');
                 Route::post('phone-verification', 'ProfileController@phoneVerify')->name('api.phoneVerification');
             });
+            /*
+             * ---------------------------------------------------------------------------------------------------------
+             * ADMIN && USER COMMON API
+             * ---------------------------------------------------------------------------------------------------------
+             * */
+            Route::group(['namespace' => 'Hotel'] , function () {
+                Route::get('get-all-hotel', 'HotelController@getAllHotel')->name('getAllHotel');
+                Route::get('filter-hotels', 'HotelController@filterHotel')->name('filterHotel');
+                Route::get('hotel-details', 'HotelController@hotelDetail')->name('hotelDetail');
+
+            });
+
             Route::group(['middleware' => 'admin'] , function (){
 
                 Route::group(['namespace' => 'Hotel'] , function () {

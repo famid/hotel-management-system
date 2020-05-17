@@ -17,4 +17,5 @@ class HotelRepository extends BaseRepository
         $this->model = new Hotel();
         parent::__construct($this->model);
     }
+
 }

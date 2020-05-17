@@ -49,4 +49,28 @@ class HotelController extends Controller
 
         return response()->json($response);
     }
+
+    /**
+     * @return JsonResponse
+     */
+    public function getAllHotel() {
+        $response = $this->hotelService->allHotel();
+
+        return response()->json($response);
+
+    }
+
+    /**
+     *
+     */
+    public function filterHotel() {
+
+    }
+
+    /**
+     *
+     */
+    public function hotelDetail() {
+
+    }
 }

@@ -100,9 +100,5 @@ class RoomRepository extends BaseRepository
             ->whereDate('check_in' ,'<=', Carbon::now())
             //->where('rooms.reservation_status', '=', false)
             ->get();
-
-
     }
-
-
 }
