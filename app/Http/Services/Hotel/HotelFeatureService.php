@@ -131,5 +131,4 @@ class HotelFeatureService
 
         return ['success' => true , 'message' => 'Hotel was deleted successfully'];
     }
-
 }

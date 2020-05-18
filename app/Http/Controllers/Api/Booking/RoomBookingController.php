@@ -18,7 +18,7 @@ class RoomBookingController extends Controller
     }
 
     public function checkInRoom(CheckInRequest $request) {
-        $response = $this->roomBookingService->create($request->all());
+        $response = $this->roomBookingService->booking($request->all());
         //$response = $this->roomBookingService->updateReservationStatus();
         return response()->json($response);
     }

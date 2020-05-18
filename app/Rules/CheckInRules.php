@@ -5,15 +5,16 @@ namespace App\Rules;
 use App\Http\Services\Booking\RoomBookingService;
 use Illuminate\Contracts\Validation\Rule;
 
-class PaymentRules implements Rule
+class CheckInRules implements Rule
 {
     private $roomBookingService;
-
     /**
      * Create a new rule instance.
      *
+     * @return void
      */
-    public function __construct(){
+    public function __construct()
+    {
         $this->roomBookingService = new RoomBookingService();
     }
 
@@ -26,7 +27,7 @@ class PaymentRules implements Rule
      */
     public function passes($attribute, $value)
     {
-        return  $this->roomBookingService->validRoomIdCheck($value);
+        return  $this->roomBookingService->validRoomCheckInDate($value);
     }
 
     /**
@@ -36,6 +37,6 @@ class PaymentRules implements Rule
      */
     public function message()
     {
-        return __('Room is not found.');
+        return __('Can not check in  room before current datetime , invalid check_in datetime.');
     }
 }

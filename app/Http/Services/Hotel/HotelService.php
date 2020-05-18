@@ -4,6 +4,7 @@
 namespace App\Http\Services\Hotel;
 
 
+use App\Http\Repository\HotelFeatureRepository;
 use App\Http\Repository\HotelRepository;
 use Exception;
 use Illuminate\Support\Facades\Auth;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 class HotelService
 {
     protected $hotelRepository;
+    protected $hotelFeatureRepository;
     protected $errorResponse;
     protected $errorMessage;
 
@@ -19,6 +21,7 @@ class HotelService
      */
     public function __construct() {
         $this->hotelRepository = new HotelRepository();
+        $this->hotelFeatureRepository = new HotelFeatureRepository();
         $this->errorMessage = __('Something went wrong');
         $this->errorResponse = [
             'success' => false,
@@ -95,6 +98,10 @@ class HotelService
 
         return ['success' => true , 'message' => __('Hotel was deleted successfully')];
     }
+
+    /**
+     * @return array
+     */
     public function  allHotel () :array {
         $allHotelData = $this->hotelRepository->getAll();
         if($allHotelData->isEmpty()) {
@@ -104,5 +111,20 @@ class HotelService
 
         return ['success' => true, 'data' => $allHotelData, 'message' => __('Get your Hotel')];
 
+    }
+
+    /**
+     * @param int $id
+     * @return array
+     */
+    public function getHotelDetails(int $id) :array{
+        $hotelDetails['details'] = $this->hotelRepository->hotelDetailsById($id);
+        $hotelDetails['features'] = $this->hotelFeatureRepository->getFeatureByHotelId($id);
+        if(!$hotelDetails) {
+
+            return $this->errorResponse;
+        }
+
+        return ['success' => true, 'data' => $hotelDetails, 'message' => __('Hotel Details is found successfully')];
     }
 }

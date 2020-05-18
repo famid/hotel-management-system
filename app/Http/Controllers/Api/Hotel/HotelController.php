@@ -65,12 +65,17 @@ class HotelController extends Controller
      */
     public function filterHotel() {
 
+
     }
 
     /**
-     *
+     * @param DeleteHotelRequest $request
+     * @return JsonResponse
      */
-    public function hotelDetail() {
+    public function hotelDetails(DeleteHotelRequest $request) {
+        $response = $this->hotelService->getHotelDetails($request->id);
+
+        return response()->json($response);
 
     }
 }

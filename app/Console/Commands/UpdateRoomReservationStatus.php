@@ -2,7 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Services\Booking\RoomBookingService;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class UpdateRoomReservationStatus extends Command
 {
@@ -11,14 +13,16 @@ class UpdateRoomReservationStatus extends Command
      *
      * @var string
      */
-    protected $signature = 'command:name';
+    protected $signature = 'update:reservation-status';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Update reservation status';
+
+    private $roomBookingService;
 
     /**
      * Create a new command instance.
@@ -28,6 +32,7 @@ class UpdateRoomReservationStatus extends Command
     public function __construct()
     {
         parent::__construct();
+        $this->roomBookingService = new RoomBookingService();
     }
 
     /**
@@ -35,8 +40,9 @@ class UpdateRoomReservationStatus extends Command
      *
      * @return mixed
      */
-    public function handle()
-    {
-        //
+    public function handle(){
+//        $this->roomBookingService->updateReservationStatus();
+//        return true;
+        Log::info("Cron job worked");
     }
 }

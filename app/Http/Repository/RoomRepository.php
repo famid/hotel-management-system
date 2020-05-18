@@ -68,7 +68,7 @@ class RoomRepository extends BaseRepository
      */
     public function checkRoomStatus($roomId) {
 
-        return $this->model::where('id',2)->where('reservation_status', '=', 0)->exists();
+        return $this->model::where('id',$roomId)->where('reservation_status', '=', 0)->exists();
     }
 
     /**
@@ -88,7 +88,12 @@ class RoomRepository extends BaseRepository
         return ((!is_null($roomId))) ? $data->where('rooms.id', $roomId)->get() : $data->get();
 
     }
-    public function updateBookedRoomList ($roomId = null) {
+
+    /**
+     * @param null $roomId
+     * @return mixed
+     */
+    public function updateBookedRoomList () {
         return $this->model::select(
             'rooms.id as room_id',
             'rooms.reservation_status as reservation_status',
@@ -101,4 +106,14 @@ class RoomRepository extends BaseRepository
             //->where('rooms.reservation_status', '=', false)
             ->get();
     }
+
+    /**
+     * @param int $id
+     * @return mixed
+     */
+    public function getHotelIdByRoomId(int $id) {
+
+        return $this->model::where('id',$id)->first()->hotel_id;
+    }
+
 }

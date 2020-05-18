@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Api\Booking;
 
+use App\Rules\CheckInRules;
 use App\Rules\PaymentRules;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
@@ -31,7 +32,7 @@ class CheckInRequest extends FormRequest
             'room_id' => ['required',new PaymentRules()],
             'paid_amount' => 'required|min:MINIMUM_PAID_AMOUNT',
             'duration_of_stay' => 'required|integer',
-            'check_in' => 'required',
+            'check_in' => ['required', new CheckInRules()]
         ];
     }
 

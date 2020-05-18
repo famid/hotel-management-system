@@ -50,4 +50,20 @@ class RoomController extends Controller
         return response()->json($response);
     }
 
+    /**
+     * @return JsonResponse
+     */
+    public function getAllRoom () {
+        $response = $this->roomService->allRoom();
+
+        return response()->json($response);
+
+    }
+    public function roomDetails (DeleteRoomRequest $request) {
+        $response = $this->roomService->getRoomDetails($request->id);
+
+        return response()->json($response);
+
+    }
+
 }

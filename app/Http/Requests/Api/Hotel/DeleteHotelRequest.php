@@ -25,6 +25,7 @@ class DeleteHotelRequest extends FormRequest
      * @return array
      */
     public function rules() {
+
         return [
             'id' => 'required|integer'
         ];

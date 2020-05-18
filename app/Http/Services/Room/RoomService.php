@@ -209,4 +209,44 @@ class RoomService
 
         return ['success' => true , 'message' => 'Room was deleted successfully'];
     }
+
+    /**
+     * @return array
+     */
+    public function  allRoom () :array {
+        $allRoomData = $this->roomRepository->getAll();
+        if($allRoomData->isEmpty()) {
+
+            return $this->errorResponse;
+        }
+
+        return ['success' => true, 'data' => $allRoomData, 'message' => __('Get your Hotel')];
+
+    }
+
+    /**
+     * @param int $id
+     * @return array
+     */
+    public function getRoomDetails(int $id) :array{
+        $where = ['id' => $id];
+        $roomDetails['details'] =  $this->roomRepository->getWhere($where);
+        if($roomDetails['details']->isEmpty()) {
+
+            return $this->errorResponse;
+        }
+        $where = ['room_id' => $id];
+        $roomDetails['images'] = $this->roomImageRepository->getWhere($where);
+
+       $i=0;
+        foreach ($roomDetails['images'] as $value){
+            $roomDetails['images'][$i++] = asset('public/room_images' . '/' . $value->picture);
+        }
+        if($roomDetails['images']->isEmpty()) {
+
+            return ['success' => true, 'data' => $roomDetails, 'message' => __('No images found for this room')];
+        }
+
+        return ['success' => true, 'data' => $roomDetails, 'message' => __('Hotel Details is found successfully')];
+    }
 }
