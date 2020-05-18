@@ -10,8 +10,20 @@ class RoomImageRepository extends BaseRepository
 {
     public $model;
 
+    /**
+     * RoomImageRepository constructor.
+     */
     public function __construct() {
         $this->model = new RoomImage();
         parent::__construct($this->model);
+    }
+
+    /**
+     * @param int $imageId
+     * @return mixed
+     */
+    public function getImageName (int $imageId) {
+
+        return $this->model::where('id',$imageId)->first()->picture;
     }
 }

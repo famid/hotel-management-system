@@ -5,6 +5,7 @@ namespace App\Http\Services\Hotel;
 
 
 use App\Http\Repository\HotelDetailRepository;
+use Exception;
 
 class HotelDetailService
 {
@@ -33,25 +34,17 @@ class HotelDetailService
      * @param array $data
      * @return array
      */
-    public function create(array $data): array
-    {
+    public function create(array $data): array {
         try {
-            $data = [
-                'hotel_id' => $data['hotel_id'],
-                'country' => $data['country'],
-                'city' => $data['city'],
-                'state' => $data['state'],
-                'location' => $data['location'],
-                'zip_code' => $data['zip_code'],
-            ];
-            $createHotelResponse = $this->hotelDetailRepository->create($data);
+            $hotelDetailsData = $this->prepareHotelDetailsData($data);
+            $createHotelResponse = $this->hotelDetailRepository->create($hotelDetailsData);
             if (!$createHotelResponse) {
 
                 return $this->errorResponse;
             }
 
-            return ['success' => true, 'message' => 'Hotel was created successfully'];
-        } catch (\Exception $e) {
+            return ['success' => true, 'message' => __('Hotel Details is created successfully')];
+        } catch (Exception $e) {
 
             return $this->errorResponse;
         }
@@ -61,28 +54,36 @@ class HotelDetailService
      * @param array $data
      * @return array
      */
-    public function update(array $data): array
-    {
+    public function update(array $data): array {
         try {
             $where = ['id' => $data['id']];
-            $data = [
-                'hotel_id' => $data['hotel_id'],
-                'country' => $data['country'],
-                'city' => $data['city'],
-                'state' => $data['state'],
-                'location' => $data['location'],
-                'zip_code' => $data['zip_code'],
-            ];
-            $updateHotelResponse = $this->hotelDetailRepository->update($where, $data);
+            $hotelDetailsData = $this->prepareHotelDetailsData($data);
+            $updateHotelResponse = $this->hotelDetailRepository->update($where,$hotelDetailsData);
             if (!$updateHotelResponse) {
 
                 return $this->errorResponse;
             }
 
-            return ['success' => true, 'message' => 'Hotel was updated successfully'];
-        } catch (\Exception $e) {
+            return ['success' => true, 'message' => __('Hotel Details are updated successfully')];
+        } catch (Exception $e) {
 
             return $this->errorResponse;
         }
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     */
+    protected function prepareHotelDetailsData (array $data) :array{
+
+        return [
+            'hotel_id' => $data['hotel_id'],
+            'country' => $data['country'],
+            'city' => $data['city'],
+            'state' => $data['state'],
+            'location' => $data['location'],
+            'zip_code' => $data['zip_code'],
+        ];
     }
 }

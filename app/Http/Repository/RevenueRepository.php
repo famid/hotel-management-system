@@ -35,7 +35,7 @@ class RevenueRepository extends  BaseRepository
             ->leftjoin('rooms', ['revenues.room_id' => 'rooms.id'])
             ->where('hotels.user_id', $userId)
             ->orderBy('revenues.id', 'desc')
-            ->get()->toArray();
+            ->get();
     }
 
 }

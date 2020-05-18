@@ -11,14 +11,6 @@
 |
 */
 
-
-//require base_path('routes/api/authentication.php');
-//require base_path('routes/api/verification.php');
-//require base_path('routes/api/profile.php');
-//require base_path('routes/api/admin.php');
-//require base_path('routes/api/user.php');
-
-//Routes are inside the api directory
 use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => ['language'], 'namespace' => 'Api'], function () {
@@ -98,13 +90,20 @@ Route::group(['middleware' => ['language'], 'namespace' => 'Api'], function () {
                     Route::post('create-room', 'RoomController@createRoom')->name('createRoom');
                     Route::post('update-room', 'RoomController@updateRoom')->name('updateRoom');
                     Route::post('delete-room', 'RoomController@deleteRoom')->name('deleteRoom');
+                    Route::post('delete-room-image', 'RoomController@deleteRoomImage')->name('deleteRoomImage');
+                    Route::post('update-room-images', 'RoomController@updateRoomImages')->name('updateRoomImages');
                 });
+
                 Route::group(['namespace' => 'Revenue'] , function () {
                     Route::get('get-user-revenue-info', 'RevenueController@getUserRevenueInfo')->name('getUserRevenueInfo');
                 });
+
                 Route::group(['namespace' => 'Booking'] , function () {
                     Route::post('check-in-room', 'RoomBookingController@checkInRoom')->name('checkInRoom');
+                });
 
+                Route::group(['namespace' => 'History'] , function () {
+                    Route::get('get-expenditure-info', 'HistoryController@getExpenditureInfo')->name('getExpenditureInfo');
                 });
 
             });

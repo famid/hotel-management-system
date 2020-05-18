@@ -35,55 +35,6 @@ class RoomService
     }
 
     /**
-     * @param $picture
-     * @return array
-     */
-    protected function pictureUpload ($picture) {
-        try {
-            //Get the file name with the extension
-            $pictureNameWithExtension = $picture->getClientOriginalName();
-            //Get just file name
-            $pictureName = pathinfo($pictureNameWithExtension, PATHINFO_FILENAME);
-            $pictureExtension = $picture->getClientOriginalExtension();
-            //File name to store
-            $pictureNameToStore = $pictureName.'_'.time().'_'.$pictureExtension;
-            //upload file path
-
-            return ['success' => true, 'pictureName' => $pictureNameToStore];
-        } catch (Exception $e) {
-
-            return ['success' => false, 'pictureName' => null,'message'=>'there is no picture'];
-        }
-    }
-
-    /**
-     * @param $data
-     * @param $roomId
-     * @return array
-     */
-    protected function roomImagesData($data, $roomId) {
-        $roomImagesData = [];
-        foreach ($data['picture'] as  $picture) {
-
-            $pictureUploadResponse = $this->pictureUpload( $picture);
-            if (! $pictureUploadResponse['success']) {
-
-                return $this->errorResponse;
-            }
-            $picture->storeAs('public/room_images', $pictureUploadResponse['pictureName']);
-
-            $arrayData = [
-                'picture' => $pictureUploadResponse['pictureName'],
-                'room_id' => $roomId
-            ];
-
-            array_push($roomImagesData, $arrayData);
-        }
-
-        return $roomImagesData;
-    }
-
-    /**
      * @param array $data
      * @return array
      */
@@ -95,14 +46,15 @@ class RoomService
             if(!$createRoomResponse['success']) {
                 throw new Exception('Failed');
             }
-            $roomId = $createRoomResponse['data'];
-            $storeRoomPictureResponse = $this->storeRoomPicture($data,$roomId);
-            if(!$storeRoomPictureResponse['success']) {
+            $roomId = $createRoomResponse['room_id'];
+            $roomImages = $data['picture'];
+            $storeRoomPictureResponse = $this->storeRoomPictures($roomImages,$roomId);
+            if(!$storeRoomPictureResponse) {
                 throw new Exception('Failed');
             }
             DB::commit();
 
-            return ['success' => true , 'message' => 'room is created successfully'];
+            return ['success' => true , 'message' => __('room is created successfully')];
         } catch (Exception $e) {
             DB::rollBack();
             return $this->errorResponse;
@@ -111,30 +63,19 @@ class RoomService
 
     /**
      * @param $data
-     * @param $roomId
      * @return array
      */
-    protected function storeRoomPicture ($data, $roomId) {
-        try {
-            $roomImageData = $this->roomImagesData($data,$roomId);
-            if(is_null($roomImageData)) {
-
-                return $this->errorResponse;
-            }
-            foreach($roomImageData as $key => $image) {
-                $createRoomImageResponse = $this->roomImageRepository->create($image);
-                if(!$createRoomImageResponse) {
-
-                    return $this->errorResponse;
-                }
-            }
-         return ['success' => true, 'message' => 'Room is created successfully and picture is stored successfully'] ;
-        } catch (Exception $e) {
+    protected function createRoom ($data) {
+        $availableAt = Carbon::now();
+        $roomData = $this->prepareRoomData($data, $availableAt);
+        $createRoom = $this->roomRepository->create($roomData);
+        if(!$createRoom) {
 
             return $this->errorResponse;
         }
-    }
 
+        return ['success' => true, 'room_id' => $createRoom->id, 'message' => __('room is created is created successfully')];
+    }
     /**
      * @param array $data
      * @param $availableAt
@@ -152,25 +93,47 @@ class RoomService
             'available_at' => $availableAt
         ];
     }
+
     /**
-     * @param $data
+     * @param $roomImages
+     * @param $roomId
+     * @return bool
+     */
+    protected function storeRoomPictures ($roomImages, $roomId) {
+        $roomImageData = $this->uploadRoomImages($roomImages,$roomId);
+        if(empty($roomImageData)) {
+
+            return false;
+        }
+        foreach($roomImageData as $key => $image) {
+            $createRoomImageResponse = $this->roomImageRepository->create($image);
+            if(!$createRoomImageResponse) {
+
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param $roomImages
+     * @param $roomId
      * @return array
      */
-    protected function createRoom ($data) {
-        try {
-            $availableAt = Carbon::now();
-            $roomData = $this->prepareRoomData($data, $availableAt);
-            $createRoom = $this->roomRepository->create($roomData);
-            if(!$createRoom) {
-
-                return $this->errorResponse;
-            }
-
-            return ['success' => true, 'data' => $createRoom->id,'message' => 'room is created is created successfully'];
-        } catch (Exception $e) {
-
-            return $this->errorResponse;
+    protected function uploadRoomImages($roomImages, $roomId){
+        $imageData = [];
+        foreach ($roomImages as $key =>$value){
+            $image = uploadFile($value, imagePath());
+            $data = [
+                'room_id' => $roomId,
+                'picture' => $image
+            ];
+            array_push($imageData,$data);
         }
+
+        return $imageData;
+
     }
 
     /**
@@ -188,7 +151,7 @@ class RoomService
                 return $this->errorResponse;
             }
 
-            return ['success' => true, 'message' => 'Room is updated succfully'];
+            return ['success' => true, 'message' => __('Room is updated successfully')];
         } catch (Exception $e) {
 
             return $this->errorResponse;
@@ -199,29 +162,39 @@ class RoomService
      * @param int $id
      * @return array
      */
-    public function delete (int $id) {
-        $where = ['id' => $id];
-        $deleteRoomResponse = $this->roomRepository->deleteWhere($where);
-        if(!$deleteRoomResponse) {
+    public function delete (int $id) :array{
+        try {
+            $where = ['id' => $id];
+            $deleteRoomResponse = $this->roomRepository->deleteWhere($where);
+            if(!$deleteRoomResponse) {
+
+                return $this->errorResponse;
+            }
+
+            return ['success' => true , 'message' => __('Room is deleted successfully')];
+
+        } catch (Exception $e) {
 
             return $this->errorResponse;
         }
-
-        return ['success' => true , 'message' => 'Room was deleted successfully'];
     }
 
     /**
      * @return array
      */
     public function  allRoom () :array {
-        $allRoomData = $this->roomRepository->getAll();
-        if($allRoomData->isEmpty()) {
+        try {
+            $allRoomData = $this->roomRepository->getAll();
+            if($allRoomData->isEmpty()) {
+
+                return $this->errorResponse;
+            }
+
+            return ['success' => true, 'data' => $allRoomData, 'message' => __('All Room are found successfully')];
+        } catch (Exception $e) {
 
             return $this->errorResponse;
         }
-
-        return ['success' => true, 'data' => $allRoomData, 'message' => __('Get your Hotel')];
-
     }
 
     /**
@@ -229,24 +202,159 @@ class RoomService
      * @return array
      */
     public function getRoomDetails(int $id) :array{
-        $where = ['id' => $id];
-        $roomDetails['details'] =  $this->roomRepository->getWhere($where);
-        if($roomDetails['details']->isEmpty()) {
+        try {
+            $where = ['id' => $id];
+            $roomDetails['details'] =  $this->roomRepository->getWhere($where);
+            if($roomDetails['details']->isEmpty()) {
+
+                return $this->errorResponse;
+            }
+            $roomDetails['images'] = $this->showAllPictureByRoomId($id);
+            if($roomDetails['images']->isEmpty()) {
+
+                return $this->errorResponse;
+            }
+
+            return ['success' => true, 'data' => $roomDetails, 'message' => __('Hotel Details is found successfully')];
+        } catch (Exception $e) {
 
             return $this->errorResponse;
         }
-        $where = ['room_id' => $id];
-        $roomDetails['images'] = $this->roomImageRepository->getWhere($where);
+    }
 
-       $i=0;
-        foreach ($roomDetails['images'] as $value){
-            $roomDetails['images'][$i++] = asset('public/room_images' . '/' . $value->picture);
+    /**
+     * @param int $roomId
+     * @return mixed
+     */
+    protected  function  showAllPictureByRoomId (int $roomId) {
+        $where = ['room_id' => $roomId];
+        $roomImages = $this->roomImageRepository->getWhere($where);
+        $i=0;
+        foreach ($roomImages as $value){
+            $roomImages[$i++] = asset(imagePath() . '/' . $value->picture);
         }
-        if($roomDetails['images']->isEmpty()) {
 
-            return ['success' => true, 'data' => $roomDetails, 'message' => __('No images found for this room')];
+        return $roomImages;
+    }
+
+    /**
+     * @param int $imageId
+     * @return array
+     */
+    public function deleteRoomImage (int $imageId) {
+        try {
+            $imageFileName = $this->roomImageRepository->getImageName($imageId);
+            $where = ['id' => $imageId];
+            $deleteImageResponse = $this->roomImageRepository->deleteWhere($where);
+            if (!$deleteImageResponse) {
+
+                return $this->errorResponse;
+            }
+            $deleteImageFile = deleteFile(imagePath(), $imageFileName);
+
+            return ['success' => true, 'message' => __('Room Picture is deleted successfully')];
+        } catch (Exception $e) {
+
+            return $this->errorResponse;
         }
+    }
 
-        return ['success' => true, 'data' => $roomDetails, 'message' => __('Hotel Details is found successfully')];
+    /**
+     * @param array $data
+     * @return array
+     */
+    public function updateRoomImages (array $data) {
+        try {
+            $roomId = $data ['room_id'];
+            $roomImages = $data['picture'];
+            $where = ['room_id' => $roomId];
+            DB::beginTransaction();
+            $deleteImageResponse = $this->roomImageRepository->deleteWhere($where);
+            if (!$deleteImageResponse) {
+                DB::rollBack();
+
+                return $this->errorResponse;
+            }
+            $storeRoomPictureResponse = $this->storeRoomPictures($roomImages,$roomId);
+            if(!$storeRoomPictureResponse) {
+                DB::rollBack();
+
+                return $this->errorResponse;
+            }
+           DB::commit();
+
+            return ['success' => true, 'message' => __('Pictures are Updated successfully')];
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $this->errorResponse;
+        }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * @param $roomImages
+ * @param $roomId
+ * @return array
+ */
+/*protected function prepareRoomImagesData($roomImages, $roomId) {
+    $roomImagesData = [];
+    foreach ($roomImages as  $picture) {
+        $pictureUploadResponse = $this->pictureUpload( $picture);
+        if (! $pictureUploadResponse['success']) {
+
+            return $this->errorResponse;
+        }
+        $picture->storeAs('public/room_images', $pictureUploadResponse['pictureName']);
+        $arrayData = [
+            'picture' => $pictureUploadResponse['pictureName'],
+            'room_id' => $roomId
+        ];
+        array_push($roomImagesData, $arrayData);
+    }
+
+    return ['success' => true, 'data' => $roomImagesData];
+}*/
+/**
+ * @param $picture
+ * @return array
+ */
+/*protected function pictureUpload ($picture) {
+    try {
+        //Get the file name with the extension
+        $pictureNameWithExtension = $picture->getClientOriginalName();
+        //Get just file name
+        $pictureName = pathinfo($pictureNameWithExtension, PATHINFO_FILENAME);
+        $pictureExtension = $picture->getClientOriginalExtension();
+        //File name to store
+        $pictureNameToStore = $pictureName.'_'.time().'_'.$pictureExtension;
+        //upload file path
+
+        return ['success' => true, 'pictureName' => $pictureNameToStore];
+    } catch (Exception $e) {
+
+        return ['success' => false, 'pictureName' => null, 'message'=> __('there is no picture')];
+    }
+}*/

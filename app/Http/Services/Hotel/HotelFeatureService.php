@@ -6,6 +6,7 @@ namespace App\Http\Services\Hotel;
 
 use App\Http\Repository\HotelFeatureRepository;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 class HotelFeatureService
 {
@@ -53,19 +54,19 @@ class HotelFeatureService
     public function create (array $feature) :array{
         try {
             $featureData = $this->hotelFeatureData($feature);
-            if(!is_null($featureData)){
-               foreach ($featureData as $key => $data) {
-                   $createHotelFeatureResponse = $this->hotelFeatureRepository->create($data);
-                   if(!$createHotelFeatureResponse) {
+            if(empty($featureData)) {
 
-                       return $this->errorResponse;
-                   }
-               }
-
-                return ['success' => true , 'message' => 'Hotel Feature was created successfully'];
+                return $this->errorResponse;
             }
+           foreach ($featureData as $key => $data) {
+               $createHotelFeatureResponse = $this->hotelFeatureRepository->create($data);
+               if(!$createHotelFeatureResponse) {
 
-            return $this->errorResponse;
+                   return $this->errorResponse;
+               }
+           }
+
+            return ['success' => true , 'message' => __('Hotel Feature was created successfully')];
         } catch (Exception $e) {
 
             return $this->errorResponse;
@@ -78,24 +79,32 @@ class HotelFeatureService
      */
     public function update (array $feature) :array{
         try {
+            DB::beginTransaction();
             $deleteAllFeatureResponse = $this->deleteFeatureByHotelId($feature['hotel_id']);
-            if($deleteAllFeatureResponse['success']){
+            if(!$deleteAllFeatureResponse['success']){
+                DB::rollBack();
+
+                return $this->errorResponse;
+            }
                 $featureData = $this->hotelFeatureData($feature);
-                if(!is_null($featureData)){
-                    foreach ($featureData as $key => $data) {
-                        $updateHotelFeatureResponse = $this->hotelFeatureRepository->create($data);
-                        if(!$updateHotelFeatureResponse) {
+            if(empty($featureData)) {
+                DB::rollBack();
 
-                            return $this->errorResponse;
-                        }
-                    }
+                return $this->errorResponse;
+            }
+            foreach ($featureData as $key => $data) {
+                $createHotelFeatureResponse = $this->hotelFeatureRepository->create($data);
+                if(!$createHotelFeatureResponse) {
+                    DB::rollBack();
 
-                    return ['success' => true , 'message' => 'Hotel Feature was updated successfully'];
+                    return $this->errorResponse;
                 }
             }
+            DB::commit();
 
-            return $this->errorResponse;
+            return ['success' => true , 'message' => __('Hotel Feature was updated successfully')];
         } catch (Exception $e) {
+            DB::rollBack();
 
             return $this->errorResponse;
         }
@@ -106,15 +115,19 @@ class HotelFeatureService
      * @return array
      */
     protected function deleteFeatureByHotelId (int $hotelId) :array{
+        try {
+            $where = ['hotel_id' => $hotelId];
+            $deleteAllFeatureResponse = $this->hotelFeatureRepository->deleteWhere($where);
+            if (!$deleteAllFeatureResponse) {
 
-        $where = ['hotel_id' => $hotelId];
-        $deleteAllFeatureResponse = $this->hotelFeatureRepository->deleteWhere($where);
-        if (!$deleteAllFeatureResponse) {
+                return $this->errorResponse;
+            }
+
+            return ['success' => true , 'message' => __('All Feature of hotel deleted successfully')];
+        } catch (Exception $e) {
 
             return $this->errorResponse;
         }
-
-        return ['success' => true , 'message' => 'All Feature of hotel deleted successfully'];
     }
 
     /**
@@ -122,13 +135,18 @@ class HotelFeatureService
      * @return array
      */
     public function delete (int $id) :array{
-        $where = ['id' => $id];
-        $deleteHotelFeatureResponse = $this->hotelFeatureRepository->deleteWhere($where);
-        if(!$deleteHotelFeatureResponse) {
+        try {
+            $where = ['id' => $id];
+            $deleteHotelFeatureResponse = $this->hotelFeatureRepository->deleteWhere($where);
+            if(!$deleteHotelFeatureResponse) {
+
+                return $this->errorResponse;
+            }
+
+            return ['success' => true , 'message' => __('Hotel was deleted successfully')];
+        } catch (Exception $e) {
 
             return $this->errorResponse;
         }
-
-        return ['success' => true , 'message' => 'Hotel was deleted successfully'];
     }
 }

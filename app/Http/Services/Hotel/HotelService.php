@@ -51,7 +51,7 @@ class HotelService
                return $this->errorResponse;
            }
 
-            return ['success' => true , 'message' => 'Hotel was created successfully'];
+            return ['success' => true , 'message' => __('Hotel was created successfully')];
         } catch (Exception $e) {
 
             return $this->errorResponse;
@@ -77,7 +77,7 @@ class HotelService
                 return $this->errorResponse;
             }
 
-            return ['success' => true , 'message' => 'Hotel was updated successfully'];
+            return ['success' => true , 'message' => __('Hotel was updated successfully')];
         } catch (Exception $e) {
 
             return $this->errorResponse;
@@ -89,28 +89,38 @@ class HotelService
      * @return array
      */
     public function delete(int $id):array {
-        $where = ['id' => $id];
-        $deleteHotelResponse = $this->hotelRepository->deleteWhere($where);
-        if(!$deleteHotelResponse) {
+        try {
+            $where = ['id' => $id];
+            $deleteHotelResponse = $this->hotelRepository->deleteWhere($where);
+            if(!$deleteHotelResponse) {
+
+                return $this->errorResponse;
+            }
+
+            return ['success' => true , 'message' => __('Hotel was deleted successfully')];
+
+        } catch (Exception $e) {
 
             return $this->errorResponse;
         }
-
-        return ['success' => true , 'message' => __('Hotel was deleted successfully')];
     }
 
     /**
      * @return array
      */
     public function  allHotel () :array {
-        $allHotelData = $this->hotelRepository->getAll();
-        if($allHotelData->isEmpty()) {
+        try {
+            $allHotelData = $this->hotelRepository->getAll();
+            if($allHotelData->isEmpty()) {
+
+                return $this->errorResponse;
+            }
+
+            return ['success' => true, 'data' => $allHotelData, 'message' => __('All Hotel are found successfully')];
+        } catch (Exception $e) {
 
             return $this->errorResponse;
         }
-
-        return ['success' => true, 'data' => $allHotelData, 'message' => __('Get your Hotel')];
-
     }
 
     /**
@@ -118,13 +128,18 @@ class HotelService
      * @return array
      */
     public function getHotelDetails(int $id) :array{
-        $hotelDetails['details'] = $this->hotelRepository->hotelDetailsById($id);
-        $hotelDetails['features'] = $this->hotelFeatureRepository->getFeatureByHotelId($id);
-        if(!$hotelDetails) {
+        try {
+            $hotelDetails['details'] = $this->hotelRepository->hotelDetailsById($id);
+            $hotelDetails['features'] = $this->hotelFeatureRepository->getFeatureByHotelId($id);
+            if ($hotelDetails['details']->isEmpty()) {
+
+                return $this->errorResponse;
+            }
+
+            return ['success' => true, 'data' => $hotelDetails, 'message' => __('Hotel Details is found successfully')];
+        } catch (Exception $e) {
 
             return $this->errorResponse;
         }
-
-        return ['success' => true, 'data' => $hotelDetails, 'message' => __('Hotel Details is found successfully')];
     }
 }
