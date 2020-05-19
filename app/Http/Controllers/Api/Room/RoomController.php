@@ -77,6 +77,7 @@ class RoomController extends Controller
      * @return JsonResponse
      */
     public function deleteRoomImage (DeleteRoomRequest $request) {
+
         $response = $this->roomService->deleteRoomImage($request->id);
 
         return response()->json($response);

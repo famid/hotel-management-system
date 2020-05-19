@@ -26,4 +26,9 @@ class RoomImageRepository extends BaseRepository
 
         return $this->model::where('id',$imageId)->first()->picture;
     }
+
+    public function getImageNameByRoomId (int $roomId) {
+
+        return $this->model::select('picture')->where('room_id',$roomId)->get();
+    }
 }

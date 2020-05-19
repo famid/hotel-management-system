@@ -76,7 +76,7 @@ Route::group(['middleware' => ['language'], 'namespace' => 'Api'], function () {
             Route::group(['middleware' => 'admin'] , function (){
 
                 Route::group(['namespace' => 'Hotel'] , function () {
-                    Route::post('create-hotel', 'HotelController@createHotel')->name('createHotel');
+                    //Route::post('create-hotel', 'HotelController@createHotel')->name('createHotel');
                     Route::post('update-hotel', 'HotelController@updateHotel')->name('updateHotel');
                     Route::post('delete-hotel', 'HotelController@deleteHotel')->name('deleteHotel');
                     Route::post('create-hotel-details', 'HotelDetailController@createDetails')->name('createDetails');

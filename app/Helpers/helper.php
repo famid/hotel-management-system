@@ -71,14 +71,23 @@ function uploadFile($file, $destinationPath, $oldFile = null)
 /**
  * @param $destinationPath
  * @param $file
+ * @return bool
  */
 function deleteFile($destinationPath, $file)
 {
     if ($file != null) {
         try {
+            $exists = Storage::exists(imagePath().'/'.$file);
+
+            if (!$exists) {
+                return false;
+            }
             Storage::delete($destinationPath . $file);
+
+            return true;
         } catch (\Exception $e) {
 
+            return false;
         }
     }
 }
