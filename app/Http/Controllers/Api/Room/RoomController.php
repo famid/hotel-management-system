@@ -9,6 +9,7 @@ use App\Http\Requests\Api\Room\UpdateRoomImagesRequest;
 use App\Http\Requests\Api\Room\UpdateRoomRequest;
 use App\Http\Services\Room\RoomService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class RoomController extends Controller
 {
@@ -93,6 +94,16 @@ class RoomController extends Controller
 
         return response()->json($response);
 
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function filterRoom(Request $request) {
+        $response = $this->roomService->filter($request->all());
+
+        return response()->json($response);
     }
 
 }

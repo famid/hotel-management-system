@@ -63,20 +63,20 @@ Route::group(['middleware' => ['language'], 'namespace' => 'Api'], function () {
              * */
             Route::group(['namespace' => 'Hotel'] , function () {
                 Route::get('get-all-hotel', 'HotelController@getAllHotel')->name('getAllHotel');
-               // Route::get('filter-hotels', 'HotelController@filterHotel')->name('filterHotel');
+                Route::post('filter-hotels', 'HotelController@filterHotel')->name('filterHotel');
                 Route::post('hotel-details', 'HotelController@hotelDetails')->name('hotelDetails');
 
             });
             Route::group(['namespace' => 'Room'] , function () {
                 Route::get('get-all-room', 'RoomController@getAllRoom')->name('getAllRoom') ;
-                //Route::get('filter-rooms', 'RoomController@filterRooms')->name('filterRooms');
+                Route::post('filter-rooms', 'RoomController@filterRoom')->name('filterRoom');
                 Route::post('room-details', 'RoomController@roomDetails')->name('roomDetails');
             });
 
             Route::group(['middleware' => 'admin'] , function (){
 
                 Route::group(['namespace' => 'Hotel'] , function () {
-                    //Route::post('create-hotel', 'HotelController@createHotel')->name('createHotel');
+                    Route::post('create-hotel', 'HotelController@createHotel')->name('createHotel');
                     Route::post('update-hotel', 'HotelController@updateHotel')->name('updateHotel');
                     Route::post('delete-hotel', 'HotelController@deleteHotel')->name('deleteHotel');
                     Route::post('create-hotel-details', 'HotelDetailController@createDetails')->name('createDetails');

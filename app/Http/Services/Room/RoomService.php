@@ -321,4 +321,40 @@ class RoomService
 
          return true;
      }
+
+    /**
+     * @param array $data
+     * @return array
+     */
+    public function filter (array $data) :array {
+        try {
+            $filterData = $this->prepareFilterData($data);
+            $filterResponse = $this->roomRepository->filter($filterData['where'],$filterData['priceRange']);
+
+            if ($filterResponse->isEmpty()) {
+
+                return ['success' => false, 'message' => __('No Result Found')];
+            }
+
+            return ['success' => true, 'data' => $filterResponse, 'message' => __('Filter Result found successfully')];
+        } catch (Exception $e) {
+
+            return $this->errorResponse;
+        }
+    }
+
+    /**
+     * @param $data
+     * @return array[]
+     */
+    protected  function prepareFilterData(array $data) :array{
+        $priceRange = [
+                $minPriceRange = (!is_null($data['price_range'][0])) ? $data['price_range'][0] : $this->roomRepository->minPriceRange(),
+                $maxPriceRange =(!is_null($data['price_range'][1])) ? $data['price_range'][1] : $this->roomRepository->maxPriceRange()
+            ];
+            $where = ['rooms.reservation_status' => ACTIVE_STATUS];
+            if($data['room_type'])   {$where['rooms.room_type'] = $data['room_type'];}
+
+        return ['where' => $where , 'priceRange' => $priceRange];
+    }
 }

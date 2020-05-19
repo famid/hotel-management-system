@@ -49,4 +49,23 @@ class HotelRepository extends BaseRepository
 
         return $this->model::where('id',$id)->first()->user_id;
     }
+
+    /**
+     * @param $where
+     * @return mixed
+     */
+    public function filter($where)
+    {
+        return Hotel::select([
+            'hotels.name as name',
+            'hotels.star_rating as star_rating',
+            'hotel_details.location as location',
+        ])
+            ->leftjoin('hotel_details', ['hotel_details.hotel_id' => 'hotels.id'])
+            ->leftjoin('hotel_features', ['hotel_features.hotel_id' => 'hotels.id'])
+            ->where($where)
+            ->distinct('hotels.id')
+            ->get();
+    }
+
 }

@@ -8,6 +8,7 @@ use App\Http\Requests\Api\Hotel\UpdateHotelRequest;
 use App\Http\Services\Hotel\HotelService;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 class HotelController extends Controller
 {
@@ -60,12 +61,15 @@ class HotelController extends Controller
 
     }
 
+
     /**
-     *
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function filterHotel() {
+    public function filterHotel(Request $request) {
+        $response = $this->hotelService->filter($request->all());
 
-
+        return response()->json($response);
     }
 
     /**

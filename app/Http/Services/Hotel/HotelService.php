@@ -142,4 +142,48 @@ class HotelService
             return $this->errorResponse;
         }
     }
+
+    /**
+     * @param array $data
+     * @return array
+     */
+    public function filter (array $data) :array {
+        try {
+            $where = $this->prepareFilterData($data);
+            $filterResponse = $this->hotelRepository->filter($where);
+            if ($filterResponse->isEmpty()) {
+
+                return ['success' => false, 'message' => __('No Result Found')];
+            }
+
+            return ['success' => true, 'data' => $filterResponse, 'message' => __('Filter Result found successfully')];
+
+        } catch (Exception $e) {
+
+            return $this->errorResponse;
+        }
+    }
+
+    /**
+     * @param $data
+     * @return array|string[]
+     */
+    protected  function prepareFilterData($data) {
+        $where = [];
+        if($data['name']) {
+            $where =[['name', 'Like', '%' . $data['name'] . '%']];
+        }else {
+            if($data['star_rating'])   {$where['hotels.star_rating'] = $data['star_rating'];}
+            if($data['country'])       {$where['hotel_details.country'] = $data['country'];}
+            if($data['city'])          {$where['hotel_details.city'] = $data['city'];}
+            if($data['state'])         {$where['hotel_details.state'] = $data['state'];}
+            if($data['location'])      {$where['hotel_details.location'] = $data['location'];}
+
+        }
+
+        return $where;
+    }
+
+
+
 }

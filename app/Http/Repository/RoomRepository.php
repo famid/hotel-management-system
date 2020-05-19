@@ -6,6 +6,7 @@ namespace App\Http\Repository;
 
 use App\Models\Room;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 
 class RoomRepository extends BaseRepository
@@ -90,7 +91,6 @@ class RoomRepository extends BaseRepository
     }
 
     /**
-     * @param null $roomId
      * @return mixed
      */
     public function updateBookedRoomList () {
@@ -114,6 +114,48 @@ class RoomRepository extends BaseRepository
     public function getHotelIdByRoomId(int $id) {
 
         return $this->model::where('id',$id)->first()->hotel_id;
+    }
+
+    /**
+     * @param $where
+     * @param $priceRange
+     * @return mixed
+     */
+    public function filter($where, $priceRange) {
+
+        return $this->model::select(
+            'hotels.name as name',
+            'hotels.star_rating as star_rating',
+            'hotel_details.country as country',
+            'hotel_details.location as location',
+            'rooms.id as room_id',
+           'rooms.reservation_status as room_status',
+            'rooms.available_at as available_at'
+        )
+            ->leftJoin('hotels', ['hotels.id' => 'rooms.hotel_id'])
+            ->leftJoin('hotel_details', ['hotels.id' => 'hotel_details.hotel_id'])
+            ->where($where)
+            ->whereBetween ('rooms.rent', $priceRange)
+            ->distinct('rooms.id')
+            ->get();
+
+    }
+
+    /**
+     * @return mixed
+     */
+    public function minPriceRange () {
+
+        return DB::table('rooms')->min('rent');
+
+    }
+
+    /**
+     * @return mixed
+     */
+    public function maxPriceRange () {
+
+        return DB::table('rooms')->max('rent');
     }
 
 }
