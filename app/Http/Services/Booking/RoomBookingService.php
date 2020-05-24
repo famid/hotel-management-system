@@ -7,6 +7,8 @@ namespace App\Http\Services\Booking;
 use App\Http\Repository\RoomBookingRepository;
 use App\Http\Repository\RoomRepository;
 use App\Http\Services\Revenue\RevenueService;
+use App\Jobs\SendRoomBookingNotification;
+use App\Jobs\SendRoomBookingNotificationJob;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Auth;
@@ -108,7 +110,7 @@ class RoomBookingService
     public function booking(array $data): array {
         try {
             DB::beginTransaction();
-            $store = $this->prepareRoomBookingData($data);
+           $store = $this->prepareRoomBookingData($data);
             $availableStatus = $this->isRoomAvailable($store['room_id'], $store['check_in'], $store['check_out']);
             if (!$availableStatus) {
                 DB::rollBack();
@@ -147,15 +149,27 @@ class RoomBookingService
      * @param $data
      * @return array
      */
-    protected function prepareRoomBookingData(array $data) {
+    public function checkInRequestResponse ($data) {
+        dispatch(new SendRoomBookingNotificationJob($data))->onQueue('send-room-booking-notification');
+
+
+        return ['success' => true , 'message' => __('Your Request is accepted , we will get a message')];
+    }
+
+    /**
+     * @param $data
+     * @return array
+     */
+    protected function prepareRoomBookingData(array $data) :array {
         $rent = $this->roomRepository->getRoomRentById($data['room_id']);
         $paymentStatus = ($rent == $data['paid_amount']) ? PAID : DUE;
         $checkIn = Carbon::parse($data['check_in']);
         $durationOfDays = $data['duration_of_stay'];
         $checkOut = Carbon::parse($data['check_in'])->addDays($durationOfDays);
+        $userId = $data['user_id'];
 
         return [
-            'user_id' => Auth::id(),
+            'user_id' => $userId,
             'room_id' => $data['room_id'],
             'check_in' => $checkIn,
             'check_out' => $checkOut,
@@ -204,42 +218,3 @@ class RoomBookingService
         return !$updateResponse? false : true;
     }
 }
-/* public function updateReservationStatus() {
-         try {
-             $reservedRoomListResponse = $this->getReservedRoomList();
-             if (!$reservedRoomListResponse['success']){
-
-                 return $this->errorResponse;
-             }
-             foreach ($reservedRoomListResponse['data'] as $key => $room) {
-                 $roomId = $room['room_id'];
-                 $roomCheckIn = Carbon::parse($room['check_in']);
-                 $roomCheckOut = Carbon::parse($room['check_out']);
-                 $this->changeStatus($roomId,$roomCheckIn,$roomCheckOut);
-
-             }
-             return ['success' => true, 'message' => 'Room Status is updated successfully'];
-         } catch (Exception $e) {
-
-             return $this->errorResponse;
-         }
-     }
-
-     private function getReservedRoomList (int $roomId = null) {
-         $roomData = $this->roomRepository->BookedRoomList($roomId);
-         $allRoomData = [];
-         if($roomData->isEmpty()) {
-
-             return ['success' => false , 'data' => $allRoomData];
-         }
-         foreach($roomData as $key => $room){
-            $roomData= [
-                'room_id' => $room->room_id,
-                'check_in' => Carbon::parse($room->check_in),
-                'check_out' => Carbon::parse($room->check_out),
-            ];
-            array_push($allRoomData,$roomData);
-         }
-
-         return ['success' => true, 'data' => $allRoomData];
-     }*/

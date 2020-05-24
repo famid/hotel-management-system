@@ -152,7 +152,7 @@ return [
         'local' => [
             'supervisor-1' => [
                 'connection' => 'redis',
-                'queue' => ['default', 'email-send'],
+                'queue' => ['default', 'email-send', 'send-room-booking-notification'],
                 'balance' => 'simple',
                 'processes' => 3,
                 'tries' => 3,

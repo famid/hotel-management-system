@@ -138,7 +138,6 @@ class RoomRepository extends BaseRepository
             ->whereBetween ('rooms.rent', $priceRange)
             ->distinct('rooms.id')
             ->get();
-
     }
 
     /**
